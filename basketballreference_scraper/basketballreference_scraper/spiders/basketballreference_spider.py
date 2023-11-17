@@ -15,9 +15,9 @@ class BasketballreferenceSpider(scrapy.Spider):
         This method
         '''
         page = response.url + "/" + start_urls[0] # to get to season
-        yield scrapy.Request(page, callback = self.parse_full_credits)
+        yield scrapy.Request(page, callback = self.parse_advanced_stats)
 
-    def parse_actor_page(self, response):
+    def parse_advanced_stats(self, response):
         '''
         This method 
         '''
