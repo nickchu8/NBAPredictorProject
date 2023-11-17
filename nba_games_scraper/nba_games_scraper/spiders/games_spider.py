@@ -38,6 +38,7 @@ class GamesSpider(scrapy.Spider):
         data_json = response.xpath('//script[@id="__NEXT_DATA__"]/text()').get()
         game = json.loads(data_json)["props"]["pageProps"]["game"]
         home_team_won = game["homeTeam"]["score"] > game["awayTeam"]["score"]
+        yyyy_mm_dd = str(datetime.fromisoformat(game["gameEt"]).date())
 
         relevant_stats = {
             "fieldGoalsMade",
@@ -72,7 +73,7 @@ class GamesSpider(scrapy.Spider):
         assert len(away_team_stats) == len(relevant_stats)
 
         game_info = dict(
-            datetime_utc=datetime.fromisoformat(game["gameTimeUTC"]),
+            date=yyyy_mm_dd,
             hometeam_slug=game["homeTeam"]["teamSlug"],
             awayteam_slug=game["awayTeam"]["teamSlug"],
             winner_is_home_team=home_team_won,
