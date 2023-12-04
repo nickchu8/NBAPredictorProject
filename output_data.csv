@@ -1,0 +1,13 @@
+date,hometeam_slug,awayteam_slug,winner_is_home_team,hometeam_fieldGoalsMade,hometeam_fieldGoalsAttempted,hometeam_threePointersMade,hometeam_threePointersAttempted,hometeam_freeThrowsMade,hometeam_freeThrowsAttempted,hometeam_reboundsOffensive,hometeam_reboundsDefensive,hometeam_assists,hometeam_steals,hometeam_blocks,hometeam_foulsPersonal,hometeam_points,awayteam_fieldGoalsMade,awayteam_fieldGoalsAttempted,awayteam_threePointersMade,awayteam_threePointersAttempted,awayteam_freeThrowsMade,awayteam_freeThrowsAttempted,awayteam_reboundsOffensive,awayteam_reboundsDefensive,awayteam_assists,awayteam_steals,awayteam_blocks,awayteam_foulsPersonal,awayteam_points
+2010-01-02,blazers,warriors,True,36,74,5,15,28,34,13,30,17,6,3,21,105,34,79,3,12,18,24,11,25,14,6,1,25,89
+2010-01-02,bulls,magic,True,37,87,3,5,24,27,16,38,21,5,7,22,101,33,92,14,37,13,20,16,32,19,4,7,23,93
+2010-01-02,hornets,rockets,True,38,85,3,14,20,24,10,27,18,7,1,21,99,35,72,8,20,17,21,8,31,21,3,1,25,95
+2010-01-02,suns,grizzlies,False,40,88,5,18,18,24,14,24,25,5,8,21,103,51,96,8,15,18,25,16,33,25,7,5,20,128
+2010-01-02,kings,mavericks,False,37,92,6,18,11,13,13,29,18,4,6,23,91,36,74,3,9,24,28,4,32,21,11,4,15,99
+2010-01-02,nets,cavaliers,False,29,75,3,10,25,32,8,30,15,6,3,24,86,32,81,4,14,26,33,16,36,19,4,5,24,94
+2010-01-02,bucks,thunder,True,42,106,4,17,15,19,19,35,15,7,6,27,103,36,84,2,14,23,31,10,39,23,4,10,23,97
+2010-01-02,jazz,nuggets,False,36,71,3,12,20,27,9,32,20,9,6,22,95,42,82,5,15,16,23,8,24,23,15,3,25,105
+2010-01-02,celtics,raptors,True,36,70,6,16,25,31,8,28,26,10,5,21,103,35,71,8,15,18,25,5,23,22,6,4,27,96
+2010-01-02,wizards,spurs,False,35,80,4,10,12,17,6,30,17,4,6,20,86,37,73,8,12,15,20,3,34,23,3,3,24,97
+2010-01-02,pacers,timberwolves,True,48,98,10,25,16,17,12,30,30,6,7,28,122,40,89,5,17,26,31,12,32,22,4,1,20,111
+2010-01-02,heat,bobcats,False,36,78,11,24,14,16,11,26,23,6,6,23,97,35,67,9,17,28,31,4,28,19,6,3,18,107
