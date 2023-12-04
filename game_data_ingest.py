@@ -42,6 +42,77 @@ def put_dates_in_db(dates: collections.abc.Iterable[date]):
             df.to_sql("games", conn, if_exists="append", index=False)
 
 
+def get_average_stats_over_period(
+    conn, team_slug: str, start_date: date, end_date: date
+):
+    """
+    Return a DataFrame with one row containing a team's average statistics from
+    `start_date` to `end_date`, not including `end_date`.
+    If the team has no games in that date range, return None.
+    """
+    relevant_stats = [
+        "fieldGoalsMade",
+        "fieldGoalsAttempted",
+        "threePointersMade",
+        "threePointersAttempted",
+        "freeThrowsMade",
+        "freeThrowsAttempted",
+        "reboundsOffensive",
+        "reboundsDefensive",
+        "assists",
+        "steals",
+        "blocks",
+        "foulsPersonal",
+        "points",
+    ]
+    start_date_string = sqlite_date_string(start_date)
+    end_date_string = sqlite_date_string(end_date)
+    def query_stat_as_home(stat_name):
+        return f"SELECT {'hometeam_' + stat_name} AS {stat_name} FROM games \
+                 WHERE hometeam_slug = '{team_slug}' \
+                    AND '{start_date_string}' <= date \
+                    AND date < '{end_date_string}'"
+
+    def query_stat_as_away(stat_name):
+        return f"SELECT {'awayteam_' + stat_name} AS {stat_name} FROM games \
+                 WHERE awayteam_slug = '{team_slug}' \
+                    AND '{start_date_string}' <= date \
+                    AND date < '{end_date_string}'"
+
+    def get_value_of_stat(stat_name):
+        subq1 = query_stat_as_home(stat_name)
+        subq2 = query_stat_as_away(stat_name)
+        c = conn.cursor()
+        c.execute(f"SELECT AVG({stat_name}) FROM ({subq1} UNION ALL {subq2});")
+        return c.fetchone()[0]
+
+    def get_number_of_games_played():
+        subq1 = query_stat_as_home(relevant_stats[0])
+        subq2 = query_stat_as_away(relevant_stats[0])
+        c = conn.cursor()
+        c.execute(f"SELECT COUNT(*) FROM ({subq1} UNION ALL {subq2});")
+        return c.fetchone()[0]
+
+    game_count = get_number_of_games_played()
+    if game_count == 0:
+        return None
+    row = [get_value_of_stat(s) for s in relevant_stats]
+    row.append(game_count)
+    df = pd.DataFrame(data=[row], columns=relevant_stats + ["gamesCount"])
+    return df
+
+def generate_training_data_for_season(season_begin: date, season_end: date):
+    # TODO
+    # for each game in the season:
+    # call get_average_stats_over_period(home team, season_begin, game_date)
+    # call get_average_stats_over_period(away team, season_begin, game_date)
+    # if either is None: this is one of the first games, don't use it
+    # otherwise, make a dataframe row with the home stats, away stats, and game_winner
+
+    # At the end, return the dataframe created
+    pass
+
+
 def main():
     some_dates = date_range(date(2000, 1, 1), date(2000, 1, 4))
     put_dates_in_db(some_dates)
@@ -50,23 +121,15 @@ def main():
         c = conn.cursor()
         q = f"SELECT COUNT(*) FROM games;"
         c.execute(q)
-        print(c.fetchone())
+        print("Total count of games in the database:", c.fetchone()[0])
 
     with sqlite3.connect("games.db") as conn:
-        c = conn.cursor()
-        q = f"SELECT * FROM games WHERE date = ?;"
-        c.execute(q, (str(date(2000, 1, 1)),))
-        print(c.fetchone())
+        nuggets_stats = get_average_stats_over_period(
+            conn, "nuggets", date(2000, 1, 1), date(2001, 1, 1)
+        )
+        print("---- Nuggets stats ----")
+        print(nuggets_stats)
 
 
 if __name__ == "__main__":
     main()
-    exit()
-    with sqlite3.connect("games.db") as conn:
-        c = conn.cursor()
-        q = f"SELECT date FROM games LIMIT 5;"
-        # c.execute(q, (sqlite_date_string(date(2000, 1, 1)),))
-        ds = sqlite_date_string(date(2000, 1, 2))
-        print(ds)
-        c.execute(q)
-        print(c.fetchall())
