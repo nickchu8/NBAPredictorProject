@@ -3,7 +3,7 @@
 
 import scrapy
 import json
-from datetime import datetime, date, timedelta
+from datetime import datetime
 
 
 class GamesSpider(scrapy.Spider):
