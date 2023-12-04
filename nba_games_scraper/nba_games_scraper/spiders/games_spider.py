@@ -9,11 +9,9 @@ from datetime import datetime, date, timedelta
 class GamesSpider(scrapy.Spider):
     name = "games_spider"
     allowed_domains = ["www.nba.com"]
-    dates = ["2023-04-19"]
 
     def __init__(self, dates, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        dates = ["2023-04-19"]
         self.start_urls = [f"https://www.nba.com/games?date={d}" for d in dates]
 
     def parse(self, response):
