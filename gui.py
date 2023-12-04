@@ -84,7 +84,7 @@ def create_model_gui():
                 #sg.Text('Layer Type:'),
                 #sg.Combo(['Dense', 'Dropout', 'Conv2D', 'Flatten'], key=f'-LAYER_{i + 1}_TYPE-', default_value='Dense'),
                 sg.Text('Activation Function:'),
-                sg.Combo(['relu', 'sigmoid', 'linear', 'logistic', 'softmax', 'none'], key=f'-LAYER_{i + 1}_ACTIVATION-', default_value='relu'),
+                sg.Combo(['linear','relu', 'sigmoid','logistic', 'softmax'], key=f'-LAYER_{i + 1}_ACTIVATION-', default_value='relu'),
                 # sg.Text('Dropout Rate:'),
                 # sg.Input(key=f'-LAYER_{i + 1}_DROPOUT-', size=(5, 1), visible=False),
                 # sg.Text('Conv2D Kernel Size:'),
@@ -166,7 +166,7 @@ def create_model_gui():
 
         #if layer_type == 'Dense':
         #want to be abel to create layers with and without activation functions
-        if (activation_function == "none"):
+        if (activation_function == "linear"):
             model.add(layers.Dense(units = layer_size))
         else:
             model.add(layers.Dense(units = layer_size, activation=activation_function))
