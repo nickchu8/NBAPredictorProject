@@ -45,3 +45,6 @@ def scrape_games_to_csv(output_file_path: str, dates: list[date]):
         raise result
     p.join()
     print("Finished crawl")
+
+if __name__ == "__main__":
+    scrape_games_to_csv("output_data.csv", [date(2010, 1, 2)])
