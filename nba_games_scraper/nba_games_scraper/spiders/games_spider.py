@@ -1,5 +1,5 @@
 # to run:
-# $ scrapy crawl games_spider -o games-2010-01.csv
+# $ scrapy crawl games_spider -o games-2010-1-2.csv
 
 import scrapy
 import json
@@ -9,17 +9,12 @@ from datetime import datetime, date, timedelta
 class GamesSpider(scrapy.Spider):
     name = "games_spider"
     allowed_domains = ["www.nba.com"]
+    dates = ["2023-04-19"]
 
-    def __init__(
-        self, begin_date=date(2010, 1, 1), end_date=date(2010, 1, 31), *args, **kwargs
-    ):
+    def __init__(self, dates, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        assert begin_date <= end_date
-        ndays = int((end_date - begin_date).days)
-        deltas = (timedelta(n) for n in range(ndays + 1))
-        self.start_urls = [
-            f"https://www.nba.com/games?date={begin_date + d}" for d in deltas
-        ]
+        dates = ["2023-04-19"]
+        self.start_urls = [f"https://www.nba.com/games?date={d}" for d in dates]
 
     def parse(self, response):
         """
@@ -31,9 +26,9 @@ class GamesSpider(scrapy.Spider):
 
     def parse_game(self, response):
         """
-        Handles a page with a URL of the form https://www.nba.com/games?was-vs-dal-0011000010.
+        Handles a page with a URL of the form https://www.nba.com/game/was-vs-dal-0011000010.
         Yields one dict with data about that game: date & time, home and away teams, statistics on
-        those teams' performance, and who won the game.
+        those teams' performance, and whether the winner was the home team.
         """
         data_json = response.xpath('//script[@id="__NEXT_DATA__"]/text()').get()
         game = json.loads(data_json)["props"]["pageProps"]["game"]
