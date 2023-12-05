@@ -4,7 +4,7 @@ import sqlite3
 from datetime import date
 import collections
 import os
-from utils import table_exists, date_range, sqlite_date_string
+from utils import table_exists, date_range, sqlite_date_string, date_from_sqlite_string
 
 
 def games_df_for_dates(dates: list[date]):
@@ -67,6 +67,7 @@ def get_average_stats_over_period(
     ]
     start_date_string = sqlite_date_string(start_date)
     end_date_string = sqlite_date_string(end_date)
+
     def query_stat_as_home(stat_name):
         return f"SELECT {'hometeam_' + stat_name} AS {stat_name} FROM games \
                  WHERE hometeam_slug = '{team_slug}' \
@@ -101,20 +102,67 @@ def get_average_stats_over_period(
     df = pd.DataFrame(data=[row], columns=relevant_stats + ["gamesCount"])
     return df
 
-def generate_training_data_for_season(season_begin: date, season_end: date):
-    # TODO
-    # for each game in the season:
-    # call get_average_stats_over_period(home team, season_begin, game_date)
-    # call get_average_stats_over_period(away team, season_begin, game_date)
-    # if either is None: this is one of the first games, don't use it
-    # otherwise, make a dataframe row with the home stats, away stats, and game_winner
 
-    # At the end, return the dataframe created
-    pass
+def generate_training_data_for_season(conn, season_begin: date, season_end: date):
+    """
+    Return a DataFrame with one row for each non-starting game between
+    `season_begin` and `season_end`, inclusive. A non-starting game is one
+    where both teams in the game have played one or more games within
+    `season_begin`, `season_end` prior to that game.
+    The columns in the DataFrame are:
+      - average statistics for the home team's previous performance, with
+    the prefix "hometeam_"
+      - the same statistics for the away team, with the prefix "awayteam_"
+      - the column "winner_is_home_team" with a value of 1 or 0
+
+    Precondition: all the NBA games between `season_begin` and `season_end` inclusive
+    are loaded into the SQLite database corresponding to `conn`.
+    Call `put_dates_in_db(date_range(season_begin, season_end))` to meet this
+    precondition.
+    """
+    begin_str = sqlite_date_string(season_begin)
+    end_str = sqlite_date_string(season_end)
+    q = f"SELECT hometeam_slug, awayteam_slug, winner_is_home_team, date \
+          FROM games \
+          WHERE '{begin_str}' <= date AND date <= '{end_str}'"
+    c = conn.cursor()
+    c.execute(q)
+
+    # We want to use the statistics columns returned by `get_average_stats_over_period`.
+    # Rather than set the columns right here, we initialize `result` to None and will set it
+    # to non-None once we obtain the first row that belongs in it.
+    result = None
+    for home_slug, away_slug, winner_is_home_team, game_date in c.fetchall():
+        game_date = date_from_sqlite_string(game_date)
+        home_history = get_average_stats_over_period(
+            conn, home_slug, season_begin, game_date
+        )
+        away_history = get_average_stats_over_period(
+            conn, away_slug, season_begin, game_date
+        )
+        if home_history is None or away_history is None:
+            # This is a starting game so we don't include it
+            continue
+        home_history.drop(["gamesCount"], axis=1, inplace=True)
+        away_history.drop(["gamesCount"], axis=1, inplace=True)
+        home_history.rename(lambda stat: "hometeam_" + stat, axis=1, inplace=True)
+        away_history.rename(lambda stat: "awayteam_" + stat, axis=1, inplace=True)
+        winner_column = pd.Series([winner_is_home_team], name="winner_is_home_team")
+
+        game_datum = pd.concat(
+            [home_history, away_history, winner_column],
+            axis="columns",
+        )
+
+        if result is None:
+            result = game_datum
+        else:
+            result = pd.concat([result, game_datum], ignore_index=True)
+    return result
 
 
 def main():
-    some_dates = date_range(date(2000, 1, 1), date(2000, 1, 4))
+    some_dates = date_range(date(2000, 1, 1), date(2000, 1, 10))
     put_dates_in_db(some_dates)
 
     with sqlite3.connect("games.db") as conn:
@@ -124,11 +172,11 @@ def main():
         print("Total count of games in the database:", c.fetchone()[0])
 
     with sqlite3.connect("games.db") as conn:
-        nuggets_stats = get_average_stats_over_period(
-            conn, "nuggets", date(2000, 1, 1), date(2001, 1, 1)
+        df = generate_training_data_for_season(
+            conn, date(2000, 1, 1), date(2000, 1, 10)
         )
-        print("---- Nuggets stats ----")
-        print(nuggets_stats)
+        print("---- Training Data ----")
+        print(df)
 
 
 if __name__ == "__main__":
