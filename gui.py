@@ -6,7 +6,7 @@ from scipy.signal import convolve2d
 # Based on https://www.pysimplegui.org/en/latest/cookbook/#recipe-pattern-2a-persistent-window-multiple-reads-using-an-event-loop
 
 #WHAT TO WORK ON:
-# when selecting dropout or conv2d, i want it so that when i select either from dropdown -> can specify parameter
+# Incorporate the datetime stuff into the season selection
 
 #Set a color scheme for the window
 # https://www.pysimplegui.org/en/latest/cookbook/#themes-window-beautification
@@ -94,8 +94,10 @@ def create_model_gui():
             layout += [
                 [sg.Text('Season Selection', font = ('Arial', 16))],
                 [sg.Text('Season')],
-                [sg.Combo(['2000','2001','2002','2003','2004','2005','2006','2007','2008','2009','2010','2011','2012','2013','2014','2015',
-                        '2016','2017','2018','2019','2020','2021','2022'], key = 'season')],
+                [sg.Combo(['2000-2001','2001-2002','2002-2003','2003-2004','2004-2005','2005-2006',
+                           '2006-2007','2007-2008','2008-2009','2009-2010','2010-2011','2011-2012',
+                           '2012-2013','2013-2014','2014-2015','2015-2016',
+                        '2016-2017','2017-2018','2018-2019','2019-2020','2020-2021','2021-2022','2022-2023'], key = 'season')],
                 [sg.HorizontalSeparator()],
 
                 [sg.Text('Loss Functions', font = ("Arial", 16))],
