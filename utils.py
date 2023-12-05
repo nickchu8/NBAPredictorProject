@@ -18,5 +18,8 @@ def date_range(first: date, last: date):
     return (first + timedelta(n) for n in range(ndays + 1))
 
 
-def sqlite_date_string(d: date):
+def sqlite_date_string(d: date) -> str:
     return str(datetime(d.year, d.month, d.day))
+
+def date_from_sqlite_string(s: str) -> date:
+    return datetime.fromisoformat(s).date()
