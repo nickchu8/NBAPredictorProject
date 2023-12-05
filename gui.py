@@ -1,8 +1,6 @@
 import PySimpleGUI as sg
 from tensorflow import keras
 from keras import datasets, layers, models
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import InputLayer, Dense
 from scipy.signal import convolve2d
 
 # Based on https://www.pysimplegui.org/en/latest/cookbook/#recipe-pattern-2a-persistent-window-multiple-reads-using-an-event-loop
