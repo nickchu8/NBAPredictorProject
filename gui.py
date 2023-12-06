@@ -160,29 +160,17 @@ def create_model_gui():
 
         # Add the specified hidden layers
     for layer_config in hidden_layer_configurations:
-        #layer_type = layer_config['type']
         layer_size = layer_config['size']
         activation_function = layer_config['activation']
 
-        #if layer_type == 'Dense':
-        #want to be abel to create layers with and without activation functions
+        #want to be able to create layers with and without activation functions
         if (activation_function == "linear"):
             model.add(layers.Dense(units = layer_size))
         else:
             model.add(layers.Dense(units = layer_size, activation=activation_function))
-        # elif layer_type == 'Dropout':
-        #     model.add(layers.Dropout(0.5))  # You might want to customize the dropout rate
-        # elif layer_type == 'Conv2D':
-        #     model.add(layers.Conv2D(layer_size, kernel_size=(3, 3), activation=activation_function))  # You might want to customize the kernel size
-        # elif layer_type == 'Flatten':
-        #     model.add(layers.Flatten())
 
     # Add the output layer
-    model.add(layers.Dense(2))  # You can customize the output layer as needed
-
-    # Build the model
-    input_size = 26
-    #model.build(input_shape=(None, input_size))  # Replace input_size with the appropriate input size for your data
+    model.add(layers.Dense(1, activation='sigmoid'))  # You can customize the output layer as needed
 
     # Display the model summary
     model.summary()
