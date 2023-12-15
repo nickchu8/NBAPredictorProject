@@ -17,28 +17,6 @@ def create_model_gui():
 
     sg.theme('BlueMono')
 
-    # ask for number of layers, then for each layer have a dropdown for like different types of layers to use
-
-    # layout = [  [sg.Text('Season Selection', font = ('Arial', 16))],
-    #             [sg.Text('Season')],
-    #             [sg.Combo(['2000','2001','2002','2003','2004','2005','2006','2007','2008','2009','2010','2011','2012','2013','2014','2015',
-    #                     '2016','2017','2018','2019','2020','2021','2022'], key = 'season')],
-    #             [sg.HorizontalSeparator()],
-
-    #             [sg.Text('Network Parameters', font = ("Arial", 16))],
-    #             [sg.Text('Hidden layer size'), sg.InputText(size=(3, 1), key = 'hiddensize'), sg.Text('Number of hidden layers'), sg.InputText(size=(3, 1), key = 'hiddenlayers')],
-    #             [sg.Text('Activation Function')],
-    #             [sg.Combo(['ReLU', 'Sigmoid', 'Linear', 'Logistic'], key='activation')],
-    #             [sg.HorizontalSeparator()],
-
-    #             [sg.Text('Loss Functions', font = ("Arial", 16))],
-    #             [sg.Radio('Cross Entropy', 'radio_group', default=True, key='crossentropy'), sg.Radio('Logistic', 'radio_group', key='logistic')],
-    #             [sg.Radio('Hinge', 'radio_group', key='hinge'), sg.Radio('Huber', 'radio_group', key='huber')],
-    #             [sg.HorizontalSeparator()] ,
-
-    #             [sg.Button('Submit'), sg.Button('Cancel')],
-    #             ]
-
     num_hidden_layers = 1  # Default number of hidden layers
     layout = [ 
                 [sg.Text('Network Parameters', font = ("Arial", 16))],
@@ -98,11 +76,6 @@ def create_model_gui():
                            '2006-2007','2007-2008','2008-2009','2009-2010','2010-2011','2011-2012',
                            '2012-2013','2013-2014','2014-2015','2015-2016',
                         '2016-2017','2017-2018','2018-2019','2019-2020','2020-2021','2021-2022','2022-2023'], key = 'season')],
-                [sg.HorizontalSeparator()],
-
-                [sg.Text('Loss Functions', font = ("Arial", 16))],
-                [sg.Radio('Cross Entropy', 'radio_group', default=True, key='crossentropy'), sg.Radio('Logistic', 'radio_group', key='logistic')],
-                [sg.Radio('Hinge', 'radio_group', key='hinge'), sg.Radio('Huber', 'radio_group', key='huber')],
                 [sg.HorizontalSeparator()] ,
 
             ]
@@ -119,28 +92,10 @@ def create_model_gui():
                 'activation': values[f'-LAYER_{i + 1}_ACTIVATION-']
                 }   
 
-                # if layer_config['type'] == 'Dropout':
-                #     dropout_rate_str = sg.popup_get_text(f'Enter Dropout Rate for Layer {i + 1}:', default_text='', title='Dropout Rate Input')
-                #     layer_config['dropout_rate'] = float(dropout_rate_str) if dropout_rate_str else 0.0
-                #     # dropout_rate_str = values.get(f'-LAYER_{i + 1}_DROPOUT-', '')
-                #     # layer_config['dropout_rate'] = float(dropout_rate_str) if dropout_rate_str else 0.0
-                # elif layer_config['type'] == 'Conv2D':
-                #     kernel_size_str = values.get(f'-LAYER_{i + 1}_KERNEL_SIZE-', '')
-                #     layer_config['kernel_size'] = int(kernel_size_str) if kernel_size_str else 3  # Default kernel size
-
 
                 hidden_layer_configurations.append(layer_config)
-            
-            # for i in range(num_hidden_layers):
-            #     layer_type = values.get(f'-LAYER_{i + 1}_TYPE-', '')  # Use get with a default value of ''
-            #     window[f'-LAYER_{i + 1}_DROPOUT-'].update(visible=layer_type == 'Dropout')
-            #     window[f'-LAYER_{i + 1}_KERNEL_SIZE-'].update(visible=layer_type == 'Conv2D')
 
             season = values['season']
-            if values['crossentropy'] == True: lossfunction = 'Cross Entropy'
-            if values['logistic'] == True: lossfunction = 'Logistic'
-            if values['hinge'] == True: lossfunction = 'Hinge'
-            if values['huber'] == True: lossfunction = 'Huber'
             break
 
 
