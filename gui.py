@@ -102,8 +102,6 @@ def create_model_gui():
     #after getting data, instead of building a dictionary, build a keras model
     # first layer should be input 
     model = models.Sequential()
-    params_dict = {"Season": season,
-                    "loss function": lossfunction}
 
 
     # Construct the Keras Sequential model
@@ -129,4 +127,4 @@ def create_model_gui():
     # Display the model summary
     model.summary()
 
-    return model, params_dict
+    return model, season
