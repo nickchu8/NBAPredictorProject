@@ -28,7 +28,6 @@ def create_model_gui():
     # Create the Window
     # Event Loop to process "events" and get the "values" of the inputs
     season = ""
-    lossfunction = ""
 
     while True:
         window = sg.Window('Neural Network Constructor', layout, resizable=True)

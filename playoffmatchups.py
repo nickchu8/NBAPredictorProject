@@ -8,7 +8,7 @@ matchups = {
                   'bucks', 'magic'
         ],
         'West':["spurs","timberwolves",
-    "lakers","trail blazers",
+    "lakers","blazers",
     "kings","suns",
     "mavericks","jazz"
  ]
