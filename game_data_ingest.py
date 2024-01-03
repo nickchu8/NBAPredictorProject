@@ -162,7 +162,7 @@ def generate_training_data_for_season(conn, season_begin: date, season_end: date
 
 
 def main():
-    some_dates = date_range(date(2000, 1, 1), date(2000, 1, 10))
+    some_dates = date_range(date(2000, 10, 31), date(2023, 4, 9))
     put_dates_in_db(some_dates)
 
     with sqlite3.connect("games.db") as conn:
@@ -173,7 +173,7 @@ def main():
 
     with sqlite3.connect("games.db") as conn:
         df = generate_training_data_for_season(
-            conn, date(2000, 1, 1), date(2000, 1, 10)
+            conn, date(2000, 10, 31), date(2023, 4, 9)
         )
         print("---- Training Data ----")
         print(df)
