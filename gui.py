@@ -55,15 +55,8 @@ def create_model_gui():
                 layout.append([
                 sg.Text(f'Layer {i + 1} Size:'),
                 sg.Input(key=f'-LAYER_{i + 1}_SIZE-', size=(10, 1)),
-                #sg.Text('Layer Type:'),
-                #sg.Combo(['Dense', 'Dropout', 'Conv2D', 'Flatten'], key=f'-LAYER_{i + 1}_TYPE-', default_value='Dense'),
                 sg.Text('Activation Function:'),
                 sg.Combo(['linear','relu', 'sigmoid','logistic', 'softmax'], key=f'-LAYER_{i + 1}_ACTIVATION-', default_value='relu'),
-                # sg.Text('Dropout Rate:'),
-                # sg.Input(key=f'-LAYER_{i + 1}_DROPOUT-', size=(5, 1), visible=False),
-                # sg.Text('Conv2D Kernel Size:'),
-                # sg.Input(key=f'-LAYER_{i + 1}_KERNEL_SIZE-', size=(5, 1), visible=False),
-                # sg.Button(f'-LAYER_{i + 1}_DROPOUT_BTN-', visible=False)  # Button to open input box for dropout rate
                 ])
 
             # after asking for the , add the other stuff
@@ -86,10 +79,8 @@ def create_model_gui():
             for i in range(num_hidden_layers):
                 layer_config = {
                 'size': int(values[f'-LAYER_{i + 1}_SIZE-']),
-                #'type': values[f'-LAYER_{i + 1}_TYPE-'],
                 'activation': values[f'-LAYER_{i + 1}_ACTIVATION-']
-                }   
-
+                }
 
                 hidden_layer_configurations.append(layer_config)
 
@@ -98,11 +89,6 @@ def create_model_gui():
 
 
     window.close()
-    #after getting data, instead of building a dictionary, build a keras model
-    # first layer should be input 
-    model = models.Sequential()
-
-
     # Construct the Keras Sequential model
     model = models.Sequential()
 
@@ -114,14 +100,14 @@ def create_model_gui():
         layer_size = layer_config['size']
         activation_function = layer_config['activation']
 
-        #want to be able to create layers with and without activation functions
+        # want to be able to create layers with/without activation functions
         if (activation_function == "linear"):
             model.add(layers.Dense(units = layer_size))
         else:
             model.add(layers.Dense(units = layer_size, activation=activation_function))
 
     # Add the output layer
-    model.add(layers.Dense(1, activation='sigmoid'))  # You can customize the output layer as needed
+    model.add(layers.Dense(1, activation='sigmoid')) # win probability between 0 and 1
 
     # Display the model summary
     model.summary()
