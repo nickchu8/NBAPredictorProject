@@ -1,14 +1,7 @@
-import PySimpleGUI as sg
+import FreeSimpleGUI as sg
 from tensorflow import keras
-from keras import datasets, layers, models
+from keras import layers, models
 
-# Based on https://www.pysimplegui.org/en/latest/cookbook/#recipe-pattern-2a-persistent-window-multiple-reads-using-an-event-loop
-
-#WHAT TO WORK ON:
-# Incorporate the datetime stuff into the season selection
-
-#Set a color scheme for the window
-# https://www.pysimplegui.org/en/latest/cookbook/#themes-window-beautification
 def create_model_gui():
     '''
     Gui that allows user to choose the season data and parameters for keras neural network model
@@ -17,12 +10,10 @@ def create_model_gui():
     sg.theme('BlueMono')
 
     num_hidden_layers = 1  # Default number of hidden layers
-    layout = [ 
-                [sg.Text('Network Parameters', font = ("Arial", 16))],
-                [sg.Text('Number of Hidden Layers:'), sg.Input(key='-NUM_LAYERS-', default_text=num_hidden_layers, size=(5, 1)), sg.Button('Update')],
-                [sg.Text('Hidden Layers Configuration:')]
-                
-                ]
+    layout = [[sg.Text('Network Parameters', font = ("Arial", 16))],
+              [sg.Text('Number of Hidden Layers:'), sg.Input(key='-NUM_LAYERS-', default_text=num_hidden_layers, size=(5, 1)), sg.Button('Update')],
+              [sg.Text('Hidden Layers Configuration:')]
+              ]
 
 
     # Create the Window
@@ -33,24 +24,21 @@ def create_model_gui():
         window = sg.Window('Neural Network Constructor', layout, resizable=True)
         # Read in any events and the current state of the window
         event, values = window.read()
-        # If we eclosed the window or clicked the Cancel button, break out of the
-        # loop
+        # close window or cancel => break loop
         if event == sg.WIN_CLOSED or event == 'Cancel': # if user closes window or clicks cancel
             break
-        # Season and Training Data Selection
-        #assign season
 
-        #assign training data type
+        # Season and hidden layer customization
         elif event == "Update": 
             num_hidden_layers = int(values['-NUM_LAYERS-'])
             window.close()
-
+            
             layout = [
             [sg.Text('Number of Hidden Layers:'), sg.Input(key='-NUM_LAYERS-', default_text=num_hidden_layers, size=(5, 1)), sg.Button('Update')],
             [sg.Text('Hidden Layer Configurations:')],
             
             ]
-
+            # customize hidden layer units and activation functions
             for i in range(num_hidden_layers):
                 layout.append([
                 sg.Text(f'Layer {i + 1} Size:'),
@@ -59,7 +47,7 @@ def create_model_gui():
                 sg.Combo(['linear','relu', 'sigmoid','logistic', 'softmax'], key=f'-LAYER_{i + 1}_ACTIVATION-', default_value='relu'),
                 ])
 
-            # after asking for the , add the other stuff
+            # select season
             layout += [
                 [sg.Text('Season Selection', font = ('Arial', 16))],
                 [sg.Text('Season')],
@@ -72,7 +60,7 @@ def create_model_gui():
             ]
             layout.append([sg.Button('Submit')])
         
-        # If user presses "Ok", then set values to the dictionary
+        # User presses "Ok" = done building model => set values to dictionary
         elif event == "Submit":
             # Process the entered values
             hidden_layer_configurations = []
@@ -87,20 +75,17 @@ def create_model_gui():
             season = values['season']
             break
 
-
     window.close()
     # Construct the Keras Sequential model
     model = models.Sequential()
-
     #add input layer with shape 26
     model.add(layers.InputLayer(input_shape = (26,)))
 
-        # Add the specified hidden layers
+    # Add the specified hidden layers
     for layer_config in hidden_layer_configurations:
         layer_size = layer_config['size']
         activation_function = layer_config['activation']
-
-        # want to be able to create layers with/without activation functions
+        # create layers with/without activations
         if (activation_function == "linear"):
             model.add(layers.Dense(units = layer_size))
         else:
